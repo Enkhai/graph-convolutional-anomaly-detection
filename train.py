@@ -14,7 +14,7 @@ model = GCN3Layer(dataset.num_features).to(device)
 optimizer = Adam(model.parameters(), lr=0.01, weight_decay=5e-4)
 
 model.train()
-for epoch in range(1000):
+for epoch in range(200):
     optimizer.zero_grad()
     out = model(data)
     loss = F.cross_entropy(out[data.train_mask], data.y[data.train_mask])
