@@ -47,8 +47,8 @@ class ResGCN3Layer(nn.Module):
         x, edge_index = data.x, data.edge_index
 
         x_conv1 = self.dropout(self.relu(self.conv1(x, edge_index)))
-        x_conv2 = self.dropout(self.relu(self.conv2(x_conv1, edge_index))) + self.skip0_2(x)
-        x_conv3 = self.dropout(self.relu(self.conv3(x_conv2, edge_index))) + self.skip1_3(x_conv1)
+        x_conv2 = self.dropout(self.relu(self.conv2(x_conv1, edge_index)) + self.skip0_2(x))
+        x_conv3 = self.dropout(self.relu(self.conv3(x_conv2, edge_index)) + self.skip1_3(x_conv1))
 
         return x_conv3
 
@@ -76,7 +76,7 @@ class DenseGCN3Layer(nn.Module):
         x, edge_index = data.x, data.edge_index
 
         x_conv1 = self.dropout(self.relu(self.conv1(x, edge_index)))
-        x_conv2 = self.dropout(self.relu(self.conv2(x_conv1, edge_index))) + self.skip0_2(x)
-        x_conv3 = self.dropout(self.relu(self.conv3(x_conv2, edge_index))) + self.skip0_3(x) + self.skip1_3(x_conv1)
+        x_conv2 = self.dropout(self.relu(self.conv2(x_conv1, edge_index)) + self.skip0_2(x))
+        x_conv3 = self.dropout(self.relu(self.conv3(x_conv2, edge_index)) + self.skip0_3(x) + self.skip1_3(x_conv1))
 
         return x_conv3
