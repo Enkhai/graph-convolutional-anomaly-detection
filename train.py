@@ -2,7 +2,7 @@ import torch
 from torch_geometric.datasets import Flickr
 from torch.optim import Adam
 import torch.nn.functional as F
-from models import GCN3Layer
+from models import DenseGCN3Layer
 
 # ==== Model training example ====
 
@@ -10,11 +10,11 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 dataset = Flickr('data/Flickr')
 data = dataset[0].to(device)
 
-model = GCN3Layer(dataset.num_features).to(device)
-optimizer = Adam(model.parameters(), lr=0.001, weight_decay=5e-4)
+model = DenseGCN3Layer(dataset.num_features).to(device)
+optimizer = Adam(model.parameters(), lr=0.0005, weight_decay=5e-4)
 
 model.train()
-for epoch in range(200):
+for epoch in range(1000):
     optimizer.zero_grad()
     out = model(data)
     loss = F.cross_entropy(out[data.train_mask], data.y[data.train_mask])
