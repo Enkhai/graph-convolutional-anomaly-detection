@@ -1,3 +1,4 @@
+import torch
 from torch import nn
 from torch_geometric.nn import GCNConv
 from torch.nn import Linear, ReLU, Dropout
@@ -11,7 +12,7 @@ class GCN3Layer(nn.Module):
         self.conv1 = GCNConv(num_features, 64)
         self.conv2 = GCNConv(64, 32)
         self.conv3 = GCNConv(32, 16)
-        self.linear = Linear(16, 7)
+        self.linear = Linear(16, 1)
         self.relu = ReLU()
         self.dropout = Dropout(0.2)
 
@@ -38,7 +39,7 @@ class ResGCN3Layer(nn.Module):
         self.skip1_3 = Linear(64, 16)
         self.conv3 = GCNConv(32, 16)
 
-        self.linear = Linear(16, 7)
+        self.linear = Linear(16, 1)
 
         self.relu = ReLU()
         self.dropout = Dropout(0.2)
@@ -49,8 +50,9 @@ class ResGCN3Layer(nn.Module):
         x_conv1 = self.dropout(self.relu(self.conv1(x, edge_index)))
         x_conv2 = self.dropout(self.relu(self.conv2(x_conv1, edge_index) + self.skip0_2(x)))
         x_conv3 = self.dropout(self.relu(self.conv3(x_conv2, edge_index) + self.skip1_3(x_conv1)))
+        out = torch.sigmoid(self.linear(x_conv3))
 
-        return x_conv3
+        return out
 
 
 class DenseGCN3Layer(nn.Module):
@@ -67,7 +69,7 @@ class DenseGCN3Layer(nn.Module):
         self.skip1_3 = Linear(64, 16)
         self.conv3 = GCNConv(32, 16)
 
-        self.linear = Linear(16, 7)
+        self.linear = Linear(16, 1)
 
         self.relu = ReLU()
         self.dropout = Dropout(0.2)
@@ -78,5 +80,6 @@ class DenseGCN3Layer(nn.Module):
         x_conv1 = self.dropout(self.relu(self.conv1(x, edge_index)))
         x_conv2 = self.dropout(self.relu(self.conv2(x_conv1, edge_index) + self.skip0_2(x)))
         x_conv3 = self.dropout(self.relu(self.conv3(x_conv2, edge_index) + self.skip0_3(x) + self.skip1_3(x_conv1)))
+        out = torch.sigmoid(self.linear(x_conv3))
 
-        return x_conv3
+        return out
