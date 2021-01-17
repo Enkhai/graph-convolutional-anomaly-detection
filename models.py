@@ -19,11 +19,12 @@ class GCN3Layer(nn.Module):
     def forward(self, data: Data):
         x, edge_index = data.x, data.edge_index
 
-        x = self.dropout(self.relu(self.conv1(x, edge_index)))
-        x = self.dropout(self.relu(self.conv2(x, edge_index)))
-        x = self.linear(self.conv3(x, edge_index))
+        x_conv1 = self.dropout(self.relu(self.conv1(x, edge_index)))
+        x_conv2 = self.dropout(self.relu(self.conv2(x_conv1, edge_index)))
+        x_conv3 = self.dropout(self.relu(self.conv3(x_conv2, edge_index)))
+        out = torch.sigmoid(self.linear(x_conv3))
 
-        return x
+        return out
 
 
 class ResGCN3Layer(nn.Module):
